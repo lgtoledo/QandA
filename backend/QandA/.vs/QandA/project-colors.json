@@ -5,6 +5,11 @@
       "ProjectGuid": "dabcb6b7-b757-4d46-a79c-75f3fee761e8",
       "DisplayName": "QandA",
       "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
     }
   },
   "NextColorIndex": 1
