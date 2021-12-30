@@ -5,9 +5,9 @@ interface Props {
   data: QuestionData[];
 }
 
-export const QuestionList = (props: Props) => (
+export const QuestionList = ({ data }: Props) => (
   <ul>
-    {props.data.map((question) => (
+    {data.map((question) => (
       <li key={question.questionId}></li>
     ))}
   </ul>
