@@ -10,6 +10,9 @@ export const HomePage = () => (
       <PageTitle>Unanswered Questions</PageTitle>
       <button>Ask a Question</button>
     </div>
-    <QuestionList data={getUnansweredQuestions()} />
+    <QuestionList
+      data={getUnansweredQuestions()}
+      renderItem={(question) => <div>{question.title}</div>}
+    />
   </Page>
 );
