@@ -5,6 +5,7 @@ import { QuestionList } from './QuestionList';
 import { getUnansweredQuestions, QuestionData } from './QuestionsData';
 import { Page } from './Page';
 import { PageTitle } from './PageTitle';
+import { PrimaryButton } from './Styles';
 
 export const HomePage = () => {
   const [questions, setQuestions] = React.useState<QuestionData[]>([]);
@@ -35,7 +36,9 @@ export const HomePage = () => {
         `}
       >
         <PageTitle>Unanswered Questions</PageTitle>
-        <button onClick={handleAskQuestionClick}>Ask a Question</button>
+        <PrimaryButton onClick={handleAskQuestionClick}>
+          Ask a Question
+        </PrimaryButton>
       </div>
       {questionsLoading ? (
         <div>Loading...</div>
