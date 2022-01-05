@@ -9,15 +9,27 @@ export const HomePage = () => {
   const [questionsLoading, setQuestionsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    console.log('first rendered');
+    //Defino la función que se ejecutará cuando se renderice el componente
+    const doGetUnansweredQuestions = async () => {
+      const unansweredQuestions = await getUnansweredQuestions();
+      setQuestions(unansweredQuestions);
+      setQuestionsLoading(false);
+    };
+    //Ejecuto la función
+    doGetUnansweredQuestions();
   }, []);
+
   return (
     <Page>
       <div>
         <PageTitle>Unanswered Questions</PageTitle>
         <button>Ask a Question</button>
       </div>
-      {/* <QuestionList data={getUnansweredQuestions()} /> */}
+      {questionsLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <QuestionList data={questions || []} />
+      )}
     </Page>
   );
 };
