@@ -1,10 +1,12 @@
 import React from 'react';
 import { QuestionList } from './QuestionList';
-import { getUnansweredQuestions } from './QuestionsData';
+import { getUnansweredQuestions, QuestionData } from './QuestionsData';
 import { Page } from './Page';
 import { PageTitle } from './PageTitle';
 
 export const HomePage = () => {
+  const [questions, setQuestions] = React.useState<QuestionData[]>([]);
+
   React.useEffect(() => {
     console.log('first rendered');
   }, []);
