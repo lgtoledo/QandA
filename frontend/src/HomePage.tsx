@@ -6,6 +6,7 @@ import { PageTitle } from './PageTitle';
 
 export const HomePage = () => {
   const [questions, setQuestions] = React.useState<QuestionData[]>([]);
+  const [questionsLoading, setQuestionsLoading] = React.useState(true);
 
   React.useEffect(() => {
     console.log('first rendered');
