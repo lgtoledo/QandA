@@ -10,6 +10,7 @@ import {
   FieldTextArea,
   FormButtonContainer,
   PrimaryButton,
+  FieldError,
 } from './Styles';
 import { Page } from './Page';
 import { useParams } from 'react-router-dom';
@@ -24,6 +25,10 @@ type FormData = {
 export const QuestionPage = () => {
   const [question, setQuestion] = React.useState<QuestionData | null>(null);
   const { questionId } = useParams();
+  const {
+    register,
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur' });
   React.useEffect(() => {
     const doGetQuestion = async (questionId: number) => {
       const foundQuestion = await getQuestion(questionId);
@@ -33,8 +38,6 @@ export const QuestionPage = () => {
       doGetQuestion(Number(questionId));
     }
   }, [questionId]);
-
-  const { register } = useForm<FormData>();
 
   return (
     <Page>
@@ -88,9 +91,19 @@ export const QuestionPage = () => {
                   <FieldLabel htmlFor="content">Your Answer</FieldLabel>
                   <FieldTextArea
                     id="content"
-                    {...register('content')}
-                    name="content"
+                    {...register('content', {
+                      required: true,
+                      minLength: 50,
+                    })}
                   />
+                  {errors.content && errors.content.type === 'required' && (
+                    <FieldError>You must enter the answer</FieldError>
+                  )}
+                  {errors.content && errors.content.type === 'minLength' && (
+                    <FieldError>
+                      The answer must be at least 50 characters
+                    </FieldError>
+                  )}
                 </FieldContainer>
                 <FormButtonContainer>
                   <PrimaryButton type="submit">
