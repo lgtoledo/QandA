@@ -115,10 +115,9 @@ const questionsReducer = (
         searched: action.questions,
         loading: false,
       };
-
-      // new state
-      return state;
   }
+  // new state
+  return state;
 };
 
 const rootReducer = combineReducers<AppState>({
