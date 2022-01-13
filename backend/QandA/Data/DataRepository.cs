@@ -1,35 +1,80 @@
-﻿namespace QandA.Data
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
+using Dapper;
+using QandA.Data.Models;
+using System.Collections.Generic;
+
+namespace QandA.Data
 {
     public class DataRepository : IDataRepository
     {
+        private readonly string _connectionString;
+
+        public DataRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration["ConnectionStrings:DefaultConnection"];
+        }
+
         public AnswerGetResponse GetAnswer(int answerId)
         {
-            throw new System.NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return connection.QueryFirstOrDefault<AnswerGetResponse>(@"EXEC dbo.Answer_Get_ByAnswerId @AnswerId = @AnswerId", new {AnswerId = answerId});
+            }
         }
 
         public QuestionGetSingleResponse GetQuestion(int questionId)
         {
-            throw new System.NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var question = connection.QueryFirstOrDefault<QuestionGetSingleResponse>(
+                    @"EXEC dbo.Question_GetGetSingle @QuestionId = @QuestionId", new {QUestionId = questionId});
+                
+                if (question != null)
+                {
+                    question.Answers = connection.Query<AnswerGetResponse>(
+                    @"EXEC dbo.Answer_Get_ByQuestionId @QuestionId = @QuestionId", new { QuestionId = questionId });
+                }
+                return question;
+            }
         }
 
-        public System.Collections.Generic.IEnumerable<QuestionGetManyResponse> GetQuestions()
+        public IEnumerable<QuestionGetManyResponse> GetQuestions()
         {
-            throw new System.NotImplementedException();
+            using(var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return connection.Query<QuestionGetManyResponse>(@"EXEC dbo.Question_GetMany");
+            }
         }
 
-        public System.Collections.Generic.IEnumerable<QuestionsGetManyResponse> GetQuestionsBySearch(string search)
+        public IEnumerable<QuestionGetManyResponse> GetQuestionsBySearch(string search)
         {
-            throw new System.NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return connection.Query<QuestionGetManyResponse>(@"EXEC dbo.Question_GetMany_BySearch @Search = @Search", new {Search = search});
+            }
         }
 
-        public System.Collections.Generic.IEnumerable<QuestionsGetManyResponse> GetUnansweredQuestions()
+        public IEnumerable<QuestionGetManyResponse> GetUnansweredQuestions()
         {
-            throw new System.NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return connection.Query<QuestionGetManyResponse>(@"EXEC dbo.Question_GetUnanswered");
+            }
         }
 
         public bool QuestionExists(int questionId)
         {
-            throw new System.NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return connection.QueryFirst<bool>(@"EXEC dbo.Question_Exists @QuestionId = @QuestionId", new {QuestionId = questionId});
+            }
         }
     }
 }
