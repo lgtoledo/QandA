@@ -15,6 +15,16 @@ namespace QandA.Data
             _connectionString = configuration["ConnectionStrings:DefaultConnection"];
         }
 
+        public void DeleteQuestion(int questionId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                connection.Execute(
+                @"EXEC dbo.Question_Delete @QuestionId = @QuestionId", new { QuestionId = questionId } );
+            }
+        }
+
         public AnswerGetResponse GetAnswer(int answerId)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -65,6 +75,54 @@ namespace QandA.Data
             {
                 connection.Open();
                 return connection.Query<QuestionGetManyResponse>(@"EXEC dbo.Question_GetUnanswered");
+            }
+        }
+
+        public AnswerGetResponse PostAnswer(AnswerPostRequest answer)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return connection.QueryFirst<AnswerGetResponse>(
+                @"EXEC dbo.Answer_Post
+                @QuestionId = @QuestionId, @Content = @Content,
+                @UserId = @UserId, @UserName = @UserName,
+                @Created = @Created",
+                answer
+                );
+            }
+        }
+
+        public QuestionGetSingleResponse PostQuestion(QuestionPostRequest question)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var questionId = connection.QueryFirst<int>(
+                    @"EXEC dbo.Question_Post
+                    @Title = @Title, @Content = @Content,
+                    @UserId = @UserId, @UserName = @UserName,
+                    @Created = @Created",
+                    question
+                    );
+                return GetQuestion(questionId);
+            }
+        }
+
+        public QuestionGetSingleResponse PutQuestion(int questionId, QuestionPutRequest question)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                connection.Execute(@"EXEC dbo.Question_Put @QuestionId = @QuestionId, @Title = @Title, @Content = @Content",
+                    new
+                    {
+                        QuestionId = questionId,
+                        question.Title,
+                        question.Content
+                    }
+                );
+                return GetQuestion(questionId);
             }
         }
 
