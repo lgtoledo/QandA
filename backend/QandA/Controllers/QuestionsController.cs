@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using QandA.Data;
 using QandA.Data.Models;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace QandA.Controllers
 {
@@ -14,6 +16,13 @@ namespace QandA.Controllers
         public QuestionsController(IDataRepository dataRepository)
         {
             _dataRepository = dataRepository;
+        }
+
+        [HttpGet]
+        public IEnumerable<QuestionGetManyResponse> GetQuestions()
+        {
+            var questions = _dataRepository.GetQuestions();
+            return questions;
         }
     }
 }
