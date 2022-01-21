@@ -40,7 +40,7 @@ namespace QandA.Data
             {
                 connection.Open();
                 var question = connection.QueryFirstOrDefault<QuestionGetSingleResponse>(
-                    @"EXEC dbo.Question_GetGetSingle @QuestionId = @QuestionId", new {QUestionId = questionId});
+                    @"EXEC dbo.Question_GetSingle @QuestionId = @QuestionId", new {QUestionId = questionId});
                 
                 if (question != null)
                 {
