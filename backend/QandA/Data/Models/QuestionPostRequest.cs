@@ -11,8 +11,7 @@ namespace QandA.Data.Models
 
         [Required(ErrorMessage = "Por favor incluya algún contenido para la pregunta")]
         public string Content { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
+
         public DateTime Created { get; set; }
     }
 }
