@@ -107,6 +107,27 @@ namespace QandA.Data
             }
         }
 
+        public IEnumerable<QuestionGetManyResponse> GetQuestionsBySearchWithPaging(string search, int pageNumber, int pageSize)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var parameters = new
+                {
+                    Search = search,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+                return connection.Query<QuestionGetManyResponse>(
+                  @"EXEC dbo.Question_GetMany_BySearch_WithPaging
+                        @Search = @Search,
+                        @PageNumber = @PageNumber,
+                        @PageSize = @PageSize", parameters
+                );
+            }
+        }
+
         public IEnumerable<QuestionGetManyResponse> GetUnansweredQuestions()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -172,5 +193,7 @@ namespace QandA.Data
                 return connection.QueryFirst<bool>(@"EXEC dbo.Question_Exists @QuestionId = @QuestionId", new {QuestionId = questionId});
             }
         }
+
+        
     }
 }
