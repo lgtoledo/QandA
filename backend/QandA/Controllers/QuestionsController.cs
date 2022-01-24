@@ -20,7 +20,7 @@ namespace QandA.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<QuestionGetManyResponse> GetQuestions(string search, bool includeAnswers, int page, int pageSize)
+        public IEnumerable<QuestionGetManyResponse> GetQuestions(string search, bool includeAnswers, int page=1, int pageSize=20)
         {
             if (string.IsNullOrEmpty(search))
             {
@@ -35,7 +35,7 @@ namespace QandA.Controllers
             }
             else
             {
-                return _dataRepository.GetQuestionsBySearchWithPaging(search, page=1, pageSize=20);
+                return _dataRepository.GetQuestionsBySearchWithPaging(search, page, pageSize);
             }
         }
 
