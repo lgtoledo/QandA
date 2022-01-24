@@ -5,6 +5,7 @@ using QandA.Data.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace QandA.Controllers
 {
@@ -40,9 +41,9 @@ namespace QandA.Controllers
         }
 
         [HttpGet("unanswered")]
-        public IEnumerable<QuestionGetManyResponse> GetUnansweredQuestions()
+        public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
         {
-            return _dataRepository.GetUnansweredQuestions();
+            return await _dataRepository.GetUnansweredQuestionsAsync();
         }
 
         // con ActionResult podemos retornar "NotFoundResult" cuando no se encuentre un resultado
