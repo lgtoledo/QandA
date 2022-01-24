@@ -97,6 +97,8 @@ namespace QandA.Controllers
                 questionPutRequest.Content;
 
             var savedQuestion = _dataRepository.PutQuestion(questionId, questionPutRequest);
+
+            _cache.Remove(savedQuestion.QuestionId); // Borramos el antiguo dato así no queda desactualizado
             return savedQuestion;
         }
 
@@ -110,6 +112,8 @@ namespace QandA.Controllers
                 return NotFound();
             }
             _dataRepository.DeleteQuestion(questionId);
+
+            _cache.Remove(questionId);
             return NoContent();
         }
 
@@ -129,6 +133,8 @@ namespace QandA.Controllers
                 UserName = "bob.test@test.com",
                 Created = DateTime.UtcNow
             });
+
+            _cache.Remove(answerPostRequest.QuestionId.Value);
             return savedAnswer;
         }
     }
