@@ -73,8 +73,15 @@ namespace QandA
                     policy.Requirements.Add(new MustBeQuestionAuthorRequirement())
                     )
                 );
-            services.AddScoped<IAuthorizationHandler, MusBeQUestionAuthorHandler>();
+            services.AddScoped<IAuthorizationHandler, MustBeQuestionAuthorHandler>();
             services.AddHttpContextAccessor();
+
+            services.AddCors(options =>
+                options.AddPolicy("CorsPolicy", builder =>
+                    builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins(Configuration["Frontend"])));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +99,8 @@ namespace QandA
             }
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
 
