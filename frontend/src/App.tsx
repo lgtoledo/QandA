@@ -12,6 +12,8 @@ import { SearchPage } from './SearchPage';
 import { SignInPage } from './SignInPage';
 import { NotFoundPage } from './NotFoundPage';
 import { QuestionPage } from './QuestionPage';
+import { SignOutPage } from './SignOutPage';
+
 const AskPage = React.lazy(() => import('./AskPage'));
 
 const store = configureStore();
@@ -50,7 +52,11 @@ function App() {
               }
             />
             <Route path="search" element={<SearchPage />} />
-            <Route path="signin" element={<SignInPage />} />
+            <Route path="signin" element={<SignInPage action="signin" />} />
+            <Route
+              path="/signin-callback"
+              element={<SignInPage action="signin-callback" />}
+            />
             <Route path="questions/:questionId" element={<QuestionPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
