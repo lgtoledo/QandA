@@ -110,12 +110,14 @@ export const getQuestion = async (
 export const searchQuestions = async (
   criteria: string,
 ): Promise<QuestionData[]> => {
-  await wait(500);
-  return questions.filter(
-    (q) =>
-      q.title.toLowerCase().indexOf(criteria.toLowerCase()) >= 0 ||
-      q.content.toLowerCase().indexOf(criteria.toLowerCase()) >= 0,
-  );
+  const result = await http<QuestionDataFromServer[]>({
+    path: `/questions?search=${criteria}`,
+  });
+  if (result.ok && result.body) {
+    return result.body.map(mapQuestionFromServer);
+  } else {
+    return [];
+  }
 };
 
 export interface PostQuestionData {
