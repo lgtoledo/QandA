@@ -1,5 +1,9 @@
 import { Console } from 'console';
 import { http } from './http';
+import { getAccessToken } from './Auth';
+import { Question } from './Question';
+import { pathToFileURL } from 'url';
+import { resourceLimits } from 'worker_threads';
 
 export interface QuestionData {
   questionId: number;
@@ -130,15 +134,18 @@ export interface PostQuestionData {
 export const postQuestion = async (
   question: PostQuestionData,
 ): Promise<QuestionData | undefined> => {
-  await wait(500);
-  const questionId = Math.max(...questions.map((q) => q.questionId)) + 1;
-  const newQuestion: QuestionData = {
-    ...question,
-    questionId,
-    answers: [],
-  };
-  questions.push(newQuestion);
-  return newQuestion;
+  const accessToken = await getAccessToken();
+  const result = await http<QuestionDataFromServer, PostQuestionData>({
+    path: '/questions',
+    method: 'post',
+    body: question,
+    accessToken,
+  });
+  if (result.ok && result.body) {
+    return mapQuestionFromServer(result.body);
+  } else {
+    return undefined;
+  }
 };
 
 export interface PostAnswerData {
@@ -150,14 +157,16 @@ export interface PostAnswerData {
 export const postAnswer = async (
   answer: PostAnswerData,
 ): Promise<AnswerData | undefined> => {
-  await wait(500);
-  const question = questions.filter(
-    (q) => q.questionId === answer.questionId,
-  )[0];
-  const answerInQuestion: AnswerData = {
-    answerId: 99,
-    ...answer,
-  };
-  question.answers.push(answerInQuestion);
-  return answerInQuestion;
+  const accessToken = await getAccessToken();
+  const result = await http<AnswerData, PostAnswerData>({
+    path: '/questions/answer',
+    method: 'post',
+    body: answer,
+    accessToken,
+  });
+  if (result.ok) {
+    return result.body;
+  } else {
+    return undefined;
+  }
 };
