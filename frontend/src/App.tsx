@@ -14,6 +14,7 @@ import { NotFoundPage } from './NotFoundPage';
 import { QuestionPage } from './QuestionPage';
 import { SignOutPage } from './SignOutPage';
 import { AuthProvider } from './Auth';
+import { AuthorizedPage } from './AuthorizedPage';
 
 const AskPage = React.lazy(() => import('./AskPage'));
 
@@ -49,7 +50,9 @@ function App() {
                       </div>
                     }
                   >
-                    <AskPage />
+                    <AuthorizedPage>
+                      <AskPage />
+                    </AuthorizedPage>
                   </React.Suspense>
                 }
               />

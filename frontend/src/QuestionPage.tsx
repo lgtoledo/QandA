@@ -20,6 +20,7 @@ import { AnswerList } from './AnswerList';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppState, gettingQuestionAction, gotQuestionAction } from './Store';
+import { useAuth } from './Auth';
 
 type FormData = {
   content: string;
@@ -56,6 +57,8 @@ export const QuestionPage = () => {
     });
     setSuccessfullySubmitted(result ? true : false);
   };
+
+  const { isAuthenticated } = useAuth();
 
   return (
     <Page>
@@ -99,47 +102,49 @@ export const QuestionPage = () => {
               } on ${question.created.toLocaleDateString()} ${question.created.toLocaleTimeString()}`}
             </div>
             <AnswerList data={question.answers} />
-            <form
-              onSubmit={handleSubmit(submitForm)}
-              css={css`
-                margin-top: 20px;
-              `}
-            >
-              <Fieldset
-                disabled={formState.isSubmitting || successfullySubmitted}
+            {isAuthenticated && (
+              <form
+                onSubmit={handleSubmit(submitForm)}
+                css={css`
+                  margin-top: 20px;
+                `}
               >
-                <FieldContainer>
-                  <FieldLabel htmlFor="content">Your Answer</FieldLabel>
-                  <FieldTextArea
-                    id="content"
-                    {...register('content', {
-                      required: true,
-                      minLength: 50,
-                    })}
-                  />
-                  {formState.errors.content &&
-                    formState.errors.content.type === 'required' && (
-                      <FieldError>You must enter the answer</FieldError>
-                    )}
-                  {formState.errors.content &&
-                    formState.errors.content.type === 'minLength' && (
-                      <FieldError>
-                        The answer must be at least 50 characters
-                      </FieldError>
-                    )}
-                </FieldContainer>
-                <FormButtonContainer>
-                  <PrimaryButton type="submit">
-                    Submit Your Answer
-                  </PrimaryButton>
-                </FormButtonContainer>
-                {successfullySubmitted && (
-                  <SubmissionSuccess>
-                    Your answer was successfully submitted
-                  </SubmissionSuccess>
-                )}
-              </Fieldset>
-            </form>
+                <Fieldset
+                  disabled={formState.isSubmitting || successfullySubmitted}
+                >
+                  <FieldContainer>
+                    <FieldLabel htmlFor="content">Your Answer</FieldLabel>
+                    <FieldTextArea
+                      id="content"
+                      {...register('content', {
+                        required: true,
+                        minLength: 50,
+                      })}
+                    />
+                    {formState.errors.content &&
+                      formState.errors.content.type === 'required' && (
+                        <FieldError>You must enter the answer</FieldError>
+                      )}
+                    {formState.errors.content &&
+                      formState.errors.content.type === 'minLength' && (
+                        <FieldError>
+                          The answer must be at least 50 characters
+                        </FieldError>
+                      )}
+                  </FieldContainer>
+                  <FormButtonContainer>
+                    <PrimaryButton type="submit">
+                      Submit Your Answer
+                    </PrimaryButton>
+                  </FormButtonContainer>
+                  {successfullySubmitted && (
+                    <SubmissionSuccess>
+                      Your answer was successfully submitted
+                    </SubmissionSuccess>
+                  )}
+                </Fieldset>
+              </form>
+            )}
           </React.Fragment>
         )}
       </div>
