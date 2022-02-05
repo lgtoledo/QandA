@@ -25,14 +25,23 @@ export const HomePage = () => {
   );
 
   React.useEffect(() => {
+    let cancelled = false;
     //Defino la función que se ejecutará cuando se renderice el componente
     const doGetUnansweredQuestions = async () => {
       dispatch(gettingUnansweredQuestionsAction());
       const unansweredQuestions = await getUnansweredQuestions();
-      dispatch(gotUnansweredQuestionsAction(unansweredQuestions));
+      // En caso de que sea halla desmontado el componente, no se ejecutará la función
+      // evitando actualizar estados y mejorando rendimiento
+      if (!cancelled) {
+        dispatch(gotUnansweredQuestionsAction(unansweredQuestions));
+      }
     };
     //Ejecuto la función
     doGetUnansweredQuestions();
+    return () => {
+      // Esto se ejecutará cuando se desmonte el componente(al navegar a otra pág por ejemplo)
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

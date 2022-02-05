@@ -37,14 +37,20 @@ export const QuestionPage = () => {
     mode: 'onBlur',
   });
   React.useEffect(() => {
+    let cancelled = false;
     const doGetQuestion = async (questionId: number) => {
       dispatch(gettingQuestionAction());
       const foundQuestion = await getQuestion(questionId);
-      dispatch(gotQuestionAction(foundQuestion));
+      if (!cancelled) {
+        dispatch(gotQuestionAction(foundQuestion));
+      }
     };
     if (questionId) {
       doGetQuestion(Number(questionId));
     }
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId]);
 

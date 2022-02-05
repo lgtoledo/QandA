@@ -20,12 +20,18 @@ export const SearchPage = () => {
   const search = searchParams.get('criteria') || '';
 
   React.useEffect(() => {
+    let cancelled = false;
     const doSearch = async (criteria: string) => {
       dispatch(searchingQuestionsAction());
       const foundResults = await searchQuestions(criteria);
-      dispatch(searchedQuestionsAction(foundResults));
+      if (!cancelled) {
+        dispatch(searchedQuestionsAction(foundResults));
+      }
     };
     doSearch(search);
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
   return (
